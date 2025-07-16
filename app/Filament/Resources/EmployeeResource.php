@@ -23,27 +23,17 @@ class EmployeeResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('country_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('state_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('city_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('department_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('first_name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('last_name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('middle_name')
-                    ->required()
-                    ->maxLength(255),
+                Forms\Components\Section::make('User Information')->description('This information is used to identify the employee.')->schema([
+                    Forms\Components\TextInput::make('first_name')
+                        ->required()
+                        ->maxLength(255),
+                    Forms\Components\TextInput::make('last_name')
+                        ->required()
+                        ->maxLength(255),
+                    Forms\Components\TextInput::make('middle_name')
+                        ->required()
+                        ->maxLength(255),
+                ]),
                 Forms\Components\TextInput::make('address')
                     ->required()
                     ->maxLength(255),
@@ -53,8 +43,8 @@ class EmployeeResource extends Resource
                 Forms\Components\DatePicker::make('date_of_birth')
                     ->required(),
                 Forms\Components\DatePicker::make('date_hired')
-                    ->required(),
-            ]);
+                    ->required()->columnSpanFull(),
+            ])->columns(3);
     }
 
     public static function table(Table $table): Table
