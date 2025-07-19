@@ -63,7 +63,6 @@ class EmployeeResource extends Resource
                                     ->where('state_id', $get('state_id'))
                                     ->pluck("name", 'id')
                             )
-                            ->afterStateUpdated(fn(Set $set) => $set('state_id', null))
                             ->live()
                             ->required()
                             ->searchable()
@@ -72,7 +71,7 @@ class EmployeeResource extends Resource
                             ->relationship(name: 'department', titleAttribute: 'name')
                             ->required()
                             ->searchable()
-                            ->optionsLimit(20),
+                            ->preload(),
                     ])->columns(2),
                 Forms\Components\Section::make('User Information')->description('This information is used to identify the employee.')->schema([
                     Forms\Components\TextInput::make('first_name')
@@ -95,8 +94,12 @@ class EmployeeResource extends Resource
                 ])->columns(2),
                 Forms\Components\Section::make('Dates')->description('This information is used to identify the employee.')->schema([
                     Forms\Components\DatePicker::make('date_of_birth')
+                        ->native(false)
+                        ->displayFormat('d/m/Y')
                         ->required(),
                     Forms\Components\DatePicker::make('date_hired')
+                        ->native(false)
+                        ->displayFormat('d/m/Y')
                         ->required(),
                 ])->columns(2),
             ]);

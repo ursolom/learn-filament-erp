@@ -27,7 +27,7 @@ class StateResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Select::make('country_id')
-                ->relationship(name: "country", titleAttribute: 'name')
+                    ->relationship(name: "country", titleAttribute: 'name')
                     ->searchable()
                     ->optionsLimit(20)
                     ->native(false)
@@ -43,11 +43,12 @@ class StateResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('country_id')
+                Tables\Columns\TextColumn::make('country.name')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
+                    ->label('State Name')
+                    ->searchable(isIndividual: true),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -56,7 +57,7 @@ class StateResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-            ])
+            ])->defaultSort('country.name', 'desc')
             ->filters([
                 //
             ])
