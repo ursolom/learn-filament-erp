@@ -42,7 +42,7 @@ class CountryResource extends Resource
                     ->maxLength(5),
             ]);
     }
-
+    
     public static function table(Table $table): Table
     {
         return $table
@@ -93,3 +93,5 @@ class CountryResource extends Resource
         ];
     }
 }
+
+

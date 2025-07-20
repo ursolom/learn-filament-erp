@@ -12,10 +12,14 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Collection;
 
@@ -58,8 +62,7 @@ class EmployeeResource extends Resource
                             ->optionsLimit(20),
                         Forms\Components\Select::make('city_id')
                             ->options(
-                                fn(Get $get) =>
-                                City::query()
+                                fn(Get $get) => City::query()
                                     ->where('state_id', $get('state_id'))
                                     ->pluck("name", 'id')
                             )
@@ -165,6 +168,27 @@ class EmployeeResource extends Resource
             ]);
     }
 
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist->schema([
+            Section::make('Relationships')->schema([
+                TextEntry::make('country.name'),
+                TextEntry::make('state.name'),
+                TextEntry::make('department.name'),
+                TextEntry::make('city.name'),
+            ])->columns(2),
+            Section::make('Name')->schema([
+                TextEntry::make('first_name'),
+                TextEntry::make('middle_name'),
+                TextEntry::make('last_name'),
+            ])->columns(3),
+            Section::make('Address')->schema([
+                TextEntry::make('address'),
+                TextEntry::make('zip_code'),
+            ])->columns(2),
+        ]);
+    }
+
     public static function getRelations(): array
     {
         return [
@@ -177,7 +201,7 @@ class EmployeeResource extends Resource
         return [
             'index' => Pages\ListEmployees::route('/'),
             'create' => Pages\CreateEmployee::route('/create'),
-            'view' => Pages\ViewEmployee::route('/{record}'),
+//            'view' => Pages\ViewEmployee::route('/{record}'),
             'edit' => Pages\EditEmployee::route('/{record}/edit'),
         ];
     }
