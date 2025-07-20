@@ -8,6 +8,7 @@ use App\Models\City;
 use App\Models\Department;
 use App\Models\Employee;
 use App\Models\State;
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
@@ -18,10 +19,12 @@ use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Collection;
+use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Filters\Filter;
+use Illuminate\Database\Eloquent\Builder;
 
 class EmployeeResource extends Resource
 {
@@ -155,7 +158,51 @@ class EmployeeResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('Department')
+                    ->relationship('department', 'name')
+                    ->searchable()
+                    ->native(false)
+                    ->preload()
+                    ->label('Filter by Department')
+                    ->indicator('department '),
+                Filter::make('created_at')
+                    ->form([
+                        DatePicker::make('created_from')->native(false),
+                        DatePicker::make('created_until')->native(false),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['created_from'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                            )
+                            ->when(
+                                $data['created_until'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                            );
+                    })->indicateUsing(function (array $data): ?string {
+                        if (!$data['date']) {
+                            return null;
+                        }
+
+                        return 'Created at ' . Carbon::parse($data['date'])->toFormattedDateString();
+                    })    ->indicateUsing(function (array $data): array {
+                        $indicators = [];
+
+                        if ($data['from'] ?? null) {
+                            $indicators[] = Indicator::make('Created from ' . Carbon::parse($data['from'])->toFormattedDateString())
+                                ->removeField('from');
+                        }
+
+                        if ($data['until'] ?? null) {
+                            $indicators[] = Indicator::make('Created until ' . Carbon::parse($data['until'])->toFormattedDateString())
+                                ->removeField('until');
+                        }
+
+                        return $indicators;
+                    })
+
+
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
@@ -167,6 +214,7 @@ class EmployeeResource extends Resource
                 ]),
             ]);
     }
+
 
     public static function infolist(Infolist $infolist): Infolist
     {
