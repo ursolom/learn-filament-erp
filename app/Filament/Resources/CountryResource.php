@@ -4,6 +4,8 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\CountryResource\Pages;
 use App\Filament\Resources\CountryResource\RelationManagers;
+use App\Filament\Resources\CountryResource\RelationManagers\EmployeesRelationManager;
+use App\Filament\Resources\CountryResource\RelationManagers\StatesRelationManager;
 use App\Models\Country;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -30,29 +32,31 @@ class CountryResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('code')
-                    ->required()
-                    ->maxLength(3),
-                Forms\Components\TextInput::make('phonecode')
-                    ->required()
-                    ->numeric()
-                    ->maxLength(5),
+                Forms\Components\Section::make('Country Info')->schema([
+                    Forms\Components\TextInput::make('name')
+                        ->required()
+                        ->maxLength(255),
+                    Forms\Components\TextInput::make('code')
+                        ->required()
+                        ->maxLength(3),
+                    Forms\Components\TextInput::make('phonecode')
+                        ->required()
+                        ->numeric()
+                        ->maxLength(5),
+                ])
             ]);
     }
-    
+
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                ->searchable(),
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('code')
-                ->searchable(),
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('phonecode')
-                ->numeric(),
+                    ->numeric(),
             ])
             ->filters([
                 //
@@ -80,7 +84,8 @@ class CountryResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            StatesRelationManager::class,
+            EmployeesRelationManager::class
         ];
     }
 
@@ -93,5 +98,3 @@ class CountryResource extends Resource
         ];
     }
 }
-
-

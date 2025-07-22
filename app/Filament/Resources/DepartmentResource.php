@@ -26,7 +26,14 @@ class DepartmentResource extends Resource
     protected static ?string $modelLabel = "Department";
     protected static ?string $navigationGroup = "System Management";
     protected static ?int $navigationSort = 4;
-
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+    public static function getNavigationBadgeColor(): string|array|null
+    {
+        return static::getModel()::count() > 10 ? 'warning' : 'success';
+    }
     public static function form(Form $form): Form
     {
         return $form
@@ -71,7 +78,7 @@ class DepartmentResource extends Resource
         return $infolist->schema([
             Section::make('Department Info')->schema([
                 TextEntry::make('name'),
-                TextEntry::make('employees_count')->state(function (Model $record) :int{
+                TextEntry::make('employees_count')->state(function (Model $record): int {
                     return  $record->employees()->count();
                 })
             ])->columns(2)

@@ -4,6 +4,8 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\StateResource\Pages;
 use App\Filament\Resources\StateResource\RelationManagers;
+use App\Filament\Resources\StateResource\RelationManagers\CitiesRelationManager;
+use App\Filament\Resources\StateResource\RelationManagers\EmployeesRelationManager;
 use App\Models\State;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -31,16 +33,19 @@ class StateResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('country_id')
-                    ->relationship(name: "country", titleAttribute: 'name')
-                    ->searchable()
-                    ->optionsLimit(20)
-                    ->native(false)
-                    ->preload()
-                    ->required(),
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
+                Forms\Components\Section::make('Relationship')
+                    ->schema([
+                        Forms\Components\Select::make('country_id')
+                            ->relationship(name: "country", titleAttribute: 'name')
+                            ->searchable()
+                            ->optionsLimit(20)
+                            ->native(false)
+                            ->preload()
+                            ->required(),
+                        Forms\Components\TextInput::make('name')
+                            ->required()
+                            ->maxLength(255),
+                    ])->columns(2)
             ]);
     }
 
@@ -90,7 +95,8 @@ class StateResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            CitiesRelationManager::class,
+            EmployeesRelationManager::class
         ];
     }
 
