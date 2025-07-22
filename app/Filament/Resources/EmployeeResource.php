@@ -24,7 +24,9 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Collection;
 use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\Indicator;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Tables\Enums\FiltersLayout;
 
 class EmployeeResource extends Resource
 {
@@ -167,8 +169,8 @@ class EmployeeResource extends Resource
                     ->indicator('department '),
                 Filter::make('created_at')
                     ->form([
-                        DatePicker::make('created_from')->native(false),
-                        DatePicker::make('created_until')->native(false),
+                        DatePicker::make('created_from'),
+                        DatePicker::make('created_until'),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         return $query
@@ -186,7 +188,7 @@ class EmployeeResource extends Resource
                         }
 
                         return 'Created at ' . Carbon::parse($data['date'])->toFormattedDateString();
-                    })    ->indicateUsing(function (array $data): array {
+                    })->indicateUsing(function (array $data): array {
                         $indicators = [];
 
                         if ($data['from'] ?? null) {
@@ -201,8 +203,6 @@ class EmployeeResource extends Resource
 
                         return $indicators;
                     })
-
-
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
@@ -249,7 +249,7 @@ class EmployeeResource extends Resource
         return [
             'index' => Pages\ListEmployees::route('/'),
             'create' => Pages\CreateEmployee::route('/create'),
-//            'view' => Pages\ViewEmployee::route('/{record}'),
+            //            'view' => Pages\ViewEmployee::route('/{record}'),
             'edit' => Pages\EditEmployee::route('/{record}/edit'),
         ];
     }
