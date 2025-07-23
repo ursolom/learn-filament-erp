@@ -2,6 +2,8 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\Tenancy\EditTeamProfile;
+use App\Filament\Pages\Tenancy\RegisterTeam;
 use App\Models\Team;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -67,8 +69,10 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->tenant(Team::class)
+            ->tenantRegistration(RegisterTeam::class)
+            ->tenant(Team::class, ownershipRelationship: 'team', slugAttribute: 'slug')
             ->spa()
+            ->tenantProfile(EditTeamProfile::class)
             ->sidebarCollapsibleOnDesktop();
     }
 }

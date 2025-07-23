@@ -22,7 +22,7 @@ class ListEmployees extends ListRecords
     public function getTabs(): array
     {
         return [
-            'all' => Tab::make()->badge(Employee::count()),
+            'all' => Tab::make()->badge(Employee::count() ?? '0'),
             'This Week' => Tab::make()
                 ->modifyQueryUsing(fn(Builder $query) => $query->where('date_hired', '>=', now()->startOfWeek()))
                 ->badge(Employee::query()->where('date_hired', '>=', now()->subWeek())->count()),
