@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId("state_id")->constrained()->cascadeOnDelete();
             $table->foreignId("city_id")->constrained()->cascadeOnDelete();
             $table->foreignId("department_id")->constrained()->cascadeOnDelete();
+            $table->foreignId('team_id')->constrained()->cascadeOnDelete();
             $table->string('first_name');
             $table->string('last_name');
             $table->string('middle_name');
@@ -36,3 +37,4 @@ return new class extends Migration
         Schema::dropIfExists('employees');
     }
 };
+    
