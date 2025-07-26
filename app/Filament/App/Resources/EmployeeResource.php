@@ -14,6 +14,7 @@ use App\Models\City;
 use App\Models\Department;
 use App\Models\State;
 use Carbon\Carbon;
+use Filament\Facades\Filament;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Forms\Components\DatePicker;
@@ -24,6 +25,7 @@ use Filament\Tables\Filters\Indicator;
 use Filament\Infolists\Infolist;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Widgets\FilamentInfoWidget;
 
 class EmployeeResource extends Resource
 {
@@ -91,7 +93,9 @@ class EmployeeResource extends Resource
                             ->searchable()
                             ->optionsLimit(20),
                         Forms\Components\Select::make('department_id')
-                            ->relationship(name: 'department', titleAttribute: 'name')
+                            ->relationship(name: 'department', titleAttribute: 'name',
+                            modifyQueryUsing:fn(Builder $query)=>$query->whereBelongsTo(Filament::getTenant())
+                                )
                             ->required()
                             ->searchable()
                             ->preload(),
