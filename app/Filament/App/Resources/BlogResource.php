@@ -24,6 +24,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 
 class BlogResource extends Resource
 {
@@ -47,7 +48,17 @@ class BlogResource extends Resource
     {
         return static::getModel()::count() > 10 ? 'warning' : 'success';
     }
-
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->where(function ($query) {
+                $query->where('privet', false)
+                    ->orWhere(function ($query) {
+                        $query->where('privet', true)
+                            ->where('user_id', Auth::id());
+                    });
+            });
+    }
 
     public static function form(Form $form): Form
     {
@@ -153,13 +164,27 @@ class BlogResource extends Resource
                     ])->native(false),
             ])->filtersFormWidth(MaxWidth::FourExtraLarge)
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ViewAction::make()
+                    ->visible(fn($record) => $record->user_id === Auth::id() || $record->privet === false),
+
+                Tables\Actions\EditAction::make()
+                    ->visible(fn($record) => $record->user_id === Auth::id()),
+                Tables\Actions\DeleteAction::make()
+                    ->visible(fn($record) => $record->user_id === Auth::id()),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->label('Delete My Blogs Only')
+                        ->action(function ($records) {
+                            $userId = Auth::id();
+
+                            $records->each(function ($record) use ($userId) {
+                                if ($record->user_id === $userId) {
+                                    $record->delete();
+                                }
+                            });
+                        }),
                 ]),
             ]);
     }
