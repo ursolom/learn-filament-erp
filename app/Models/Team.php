@@ -25,4 +25,8 @@ class Team extends Model
     {
         return $this->belongsToMany(User::class);
     }
+    public function blogs(): HasMany
+    {
+        return $this->hasMany(Blog::class);
+    }
 }
