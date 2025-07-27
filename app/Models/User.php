@@ -74,8 +74,4 @@ class User extends Authenticatable implements HasTenants
     {
         return $this->hasMany(Blog::class);
     }
-    public function isAdmin(): bool
-    {
-        return $this->is_admin;
-    }
 }

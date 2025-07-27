@@ -29,4 +29,5 @@ class Team extends Model
     {
         return $this->hasMany(Blog::class);
     }
+    
 }

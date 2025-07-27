@@ -52,6 +52,12 @@ class EmployeeResource extends Resource
     {
         return static::getModel()::count() > 10 ? 'warning' : 'success';
     }
+
+    public static function canCreate(): bool
+    {
+        return false;
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -222,7 +228,7 @@ class EmployeeResource extends Resource
                     })
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+                // Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
@@ -266,7 +272,7 @@ class EmployeeResource extends Resource
     {
         return [
             'index' => Pages\ListEmployees::route('/'),
-            'create' => Pages\CreateEmployee::route('/create'),
+            // 'create' => Pages\CreateEmployee::route('/create'),
             //            'view' => Pages\ViewEmployee::route('/{record}'),
             'edit' => Pages\EditEmployee::route('/{record}/edit'),
         ];

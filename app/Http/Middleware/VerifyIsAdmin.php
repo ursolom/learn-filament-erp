@@ -19,6 +19,6 @@ class VerifyIsAdmin
         if (Auth::user() && Auth::user()->is_admin) {
             return $next($request);
         }
-        return abort(403, 'Unauthorized');
+        return redirect('/app');
     }
 }
