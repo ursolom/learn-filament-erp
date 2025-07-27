@@ -6,6 +6,7 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\MenuItem;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -24,6 +25,7 @@ class AdminPanelProvider extends PanelProvider
     {
         return $panel
             ->default()
+            ->registration()
             ->id('admin')
             ->path('admin')
             ->login()
@@ -37,6 +39,12 @@ class AdminPanelProvider extends PanelProvider
                 'purple' => Color::Purple,
                 'pink' => Color::Pink,
             ])->font('Inter')
+            ->userMenuItems([
+                MenuItem::make()
+                    ->label('App')
+                    ->icon('heroicon-o-arrow-right-on-rectangle')
+                    ->url('/app')
+            ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
